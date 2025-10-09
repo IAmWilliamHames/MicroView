@@ -55,7 +55,7 @@ Clone and open `index.html` in your browser:
 
 ```bash
 git clone https://github.com/IAmWilliamHames/MicroView.git
-cd microview
+cd MicroView
 open index.js
 ```
 
