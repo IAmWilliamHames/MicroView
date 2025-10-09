@@ -1,11 +1,11 @@
-# MicroView.js - Build Views With JavaScript
+# MicroView - Build Views With JavaScript
 
 A tiny component and state management framework built entirely with vanilla JavaScript.  
 No React. No bundlers. No dependencies.
 
 ## Overview
 
-MicroView.js explores what happens _under the hood_ of modern UI frameworks.  
+MicroView explores what happens _under the hood_ of modern UI frameworks.  
 It's less a product, more a proof of understanding.
 
 - ✅ Class-based Components
@@ -55,7 +55,7 @@ Clone and open `index.html` in your browser:
 
 ```bash
 git clone https://github.com/IAmWilliamHames/MicroView.git
-cd microview-js
+cd microview
 open index.js
 ```
 
