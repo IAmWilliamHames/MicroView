@@ -51,12 +51,12 @@ It's about clarity, not complexity.
 
 ## Try It Out
 
-Clone and open `index.html` in your browser:
+Clone and open `app.js` in your browser:
 
 ```bash
 git clone https://github.com/IAmWilliamHames/MicroView.git
 cd MicroView
-open index.js
+open app.js
 ```
 
 You'll see a reactive counter built entirely from your own code.
