@@ -54,7 +54,7 @@ It's about clarity, not complexity.
 Clone and open `index.html` in your browser:
 
 ```bash
-git clone https://github.com/IAmWilliamHames/microview.js
+git clone https://github.com/IAmWilliamHames/MicroView.git
 cd microview-js
 open index.js
 ```
