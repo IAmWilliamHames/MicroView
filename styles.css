@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Barrio&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: snow;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 90vh;
+}
+
+section h2 {
+  color: steelblue;
+  margin: 1rem 2rem;
+  font-size: 4rem;
+  font-family: Barrio, sans-serif;
+}
+
+section p {
+  margin: 1rem 2rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.02rem;
+  word-spacing: 0.04rem;
+  line-height: 1.6rem;
+  max-width: 768px;
+}
+
+.counter {
+  margin: 1rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  font-family: Barrio, sans-serif;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: steelblue;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: Barrio, sans-serif;
+}
+
+button:hover {
+  background: darkslategray;
+}
+
+@media (max-width: 480px) {
+  section h2 {
+    margin: 1rem 1rem;
+  }
+
+  section p {
+    margin: 1rem 1rem;
+  }
+}
