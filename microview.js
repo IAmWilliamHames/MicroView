@@ -27,28 +27,6 @@ function effect(fn) {
   wrapped();
 }
 
-// State Management Class
-class State {
-  constructor(initialValue) {
-    this.value = initialValue;
-    this.subscribers = [];
-  }
-
-  get() {
-    return this.value;
-  }
-
-  set(newValue) {
-    this.value = newValue;
-    this.subscribers.forEach((cb) => cb(newValue));
-  }
-
-  subscribe(cb) {
-    this.subscribers.push(cb);
-    return () => (this.subscribers = this.subscribers.filter((s) => s !== cb));
-  }
-}
-
 // Base Component Class
 class Component {
   constructor(props = {}) {
