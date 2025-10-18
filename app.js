@@ -1,13 +1,11 @@
-// Counter Component
-class Counter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { count: counterState.get() }; // Sync with global state
-  }
+// --- Global reactive signal ---
+const [count, setCount] = signal(0);
 
+// Counter Component
+class Counter extends ReactiveComponent {
   render() {
     return `
-      <div class="counter">Count: ${this.state.count}</div>
+      <div class="counter">Count: ${count()}</div>
       <div class="counterBtnGroup">
         <button class="increment">+</button>
         <button class="decrement">-</button>
@@ -16,31 +14,18 @@ class Counter extends Component {
   }
 
   afterMount() {
-    counterState.subscribe((newCount) => this.setState({ count: newCount }));
-    this.element.querySelector('.increment').addEventListener('click', () => {
-      counterState.set(counterState.get() + 1);
-    });
-    this.element.querySelector('.decrement').addEventListener('click', () => {
-      counterState.set(counterState.get() - 1);
-    });
-  }
+    this.element
+      .querySelector('.increment')
+      .addEventListener('click', () => setCount(count() + 1));
 
-  afterUpdate() {
-    this.element.querySelector('.increment').addEventListener('click', () => {
-      counterState.set(counterState.get() + 1);
-    });
-    this.element.querySelector('.decrement').addEventListener('click', () => {
-      counterState.set(counterState.get() - 1);
-    });
+    this.element
+      .querySelector('.decrement')
+      .addEventListener('click', () => setCount(count() - 1));
   }
 }
 
 // Hero Component
-class Hero extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+class Hero extends ReactiveComponent {
   render() {
     return `
       <section class="hero">
@@ -56,10 +41,7 @@ class Hero extends Component {
   }
 }
 
-// Global state instance
-const counterState = new State(0);
-
-// Setup
+// --- Setup ---
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.querySelector('#root');
   if (!root) {
@@ -68,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   new Hero({
-    header: 'MicroView: Build Views With Javascript',
+    header: 'MicroView: Build Views With JavaScript',
     description:
-      'A tiny component and state management framework built entirely with vanilla JavaScript.',
+      'A tiny component and state management framework built entirely with vanilla JavaScript — now reactive with signals.',
   }).mount('#root');
 });
