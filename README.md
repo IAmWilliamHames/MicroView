@@ -96,8 +96,8 @@ When a button is clicked, `setCount` is called. This updates the `count` signal,
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/your-repo.git
-    cd your-repo
+    git clone https://github.com/IAmWilliamHames/MicroView.git
+    cd MicroView
     ```
 2.  Because the in-browser Babel transpiler needs to fetch your script, you must serve the files from a local web server to avoid CORS errors. The easiest way is with Python:
     ```bash
