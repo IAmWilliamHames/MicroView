@@ -6,6 +6,7 @@ A tiny UI library for building reactive web applications with vanilla JavaScript
 
 -   **Hyperscript-style UI:** Build your UI with a declarative `h()` function, a lightweight alternative to JSX.
 -   **Signal-Based Reactivity:** State management is powered by an efficient and granular signal system (`signal`, `effect`).
+-   **Automatic Cleanup:** Reactive effects are automatically tracked and disposed of, preventing memory leaks.
 -   **Functional Components:** Build your UI with simple, composable functions.
 -   **Zero Dependencies:** Runs directly in the browser. Pure vanilla JavaScript.
 
@@ -60,6 +61,39 @@ The `mount` function connects your root component to a DOM element.
 ```js
 // Renders the Greeting component inside the element with the id "app"
 mount('#app', Greeting);
+```
+
+The `mount` function returns a `dispose` function, which you can call to unmount the component and clean up all of its associated reactive effects.
+
+```js
+const dispose = mount('#app', Greeting);
+
+// Sometime later...
+dispose(); // The app is now cleaned up.
+```
+
+### 4. Lifecycle and Cleanup
+
+MicroView provides an automatic cleanup mechanism to prevent memory leaks. Every reactive `effect` is tracked within a scope. When a component is unmounted (e.g., by calling the `dispose` function returned by `mount`), all of its child effects are automatically cleaned up.
+
+You can also hook into this process with the `onCleanup` function.
+
+`onCleanup(fn)`
+
+Registers a function to be called when the current reactive scope is disposed. This is useful for cleaning up manual subscriptions or side effects.
+
+```js
+function MyComponent() {
+  const timer = setInterval(() => console.log('tick'), 1000);
+
+  // Register the cleanup logic for this component.
+  onCleanup(() => {
+    clearInterval(timer);
+    console.log('Timer cleaned up!');
+  });
+
+  return h('div', null, 'Check the console.');
+}
 ```
 
 ## Example: A Reactive Counter
