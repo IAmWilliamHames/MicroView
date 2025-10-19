@@ -1,13 +1,13 @@
-# MicroView - A JSX-powered, Signal-Based UI Library
+# MicroView - A Signal-Based UI Library
 
-A tiny UI library for building reactive web applications with JSX and signals, built entirely with vanilla JavaScript. No bundlers or dependencies required.
+A tiny UI library for building reactive web applications with vanilla JavaScript. No dependencies, no bundlers, no magic.
 
 ## Features
 
--   **JSX Syntax:** Write components using familiar, declarative JSX.
+-   **Hyperscript-style UI:** Build your UI with a declarative `h()` function, a lightweight alternative to JSX.
 -   **Signal-Based Reactivity:** State management is powered by an efficient and granular signal system (`signal`, `effect`).
 -   **Functional Components:** Build your UI with simple, composable functions.
--   **Zero Tooling:** Runs directly in the browser with an in-browser JSX transpiler (Babel). No build step needed for development.
+-   **Zero Dependencies:** Runs directly in the browser. Pure vanilla JavaScript.
 
 ## Core Concepts
 
@@ -37,19 +37,19 @@ setCount(2);
 // -> "The count is now: 2"
 ```
 
-### 2. JSX for Declarative UI
+### 2. The `h()` Function for Building UIs
 
-MicroView uses JSX to define the structure of your components. To enable JSX transpilation in the browser, you must include a `/** @jsx h */` pragma at the top of your file. This tells Babel to use our custom `h` function to convert JSX into DOM elements.
+MicroView uses a **hyperscript** function, `h()`, to create DOM elements in a declarative way. It's a simple JavaScript function that takes a tag, an object of properties, and an array of children.
+
+`h(tag, props, ...children)`
 
 ```js
-/** @jsx h */
-
 function Greeting() {
-	return <h1>Hello, World!</h1>;
+	return h('h1', { class: 'title' }, 'Hello, World!');
 }
 ```
 
-The `h` function handles creating elements, assigning properties (like `class` or `id`), and attaching event listeners (like `onClick`).
+This is the pure JavaScript equivalent of what JSX transpiles to. The `h()` function handles creating elements, assigning properties (like `class` or `id`), and attaching event listeners (like `onClick`).
 
 ### 3. Mounting the Application
 
@@ -67,23 +67,20 @@ mount('#app', Greeting);
 Here’s how these concepts come together to create a simple counter component.
 
 ```js
-/** @jsx h */
-
 // 1. Create a global signal for the counter's state.
 const [count, setCount] = signal(0);
 
-// 2. Create a functional component that uses the signal.
+// 2. Create a functional component that uses the signal and h().
 function Counter() {
-	return (
-		<div class="container">
-			{/* Reading the signal here creates a reactive binding. */}
-			<h1>{count}</h1>
-
-			{/* Event listeners update the signal, triggering a re-render. */}
-			<button onClick={() => setCount(count() + 1)}>+</button>
-			<button onClick={() => setCount(count() - 1)}>-</button>
-		</div>
-	);
+  return h(
+    'div',
+    { class: 'container' },
+    // Reading the signal here creates a reactive binding.
+    h('h1', null, count),
+    // Event listeners update the signal, triggering a re-render.
+    h('button', { onClick: () => setCount(count() + 1) }, '+'),
+    h('button', { onClick: () => setCount(count() - 1) }, '-')
+  );
 }
 
 // 3. Mount the component to the DOM.
@@ -99,8 +96,4 @@ When a button is clicked, `setCount` is called. This updates the `count` signal,
     git clone https://github.com/IAmWilliamHames/MicroView.git
     cd MicroView
     ```
-2.  Because the in-browser Babel transpiler needs to fetch your script, you must serve the files from a local web server to avoid CORS errors. The easiest way is with Python:
-    ```bash
-    python -m http.server
-    ```
-3.  Open your browser and navigate to `http://localhost:8000`.
+2.  Open `index.html` directly in your browser. Since there are no dependencies or build tools, it just works.
