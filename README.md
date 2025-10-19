@@ -1,103 +1,106 @@
-# MicroView - Signal-Based JavaScript Reactivity
+# MicroView - A JSX-powered, Signal-Based UI Library
 
-A tiny component and state management framework built entirely with vanilla JavaScript.  
-No React. No bundlers. No dependencies.
+A tiny UI library for building reactive web applications with JSX and signals, built entirely with vanilla JavaScript. No bundlers or dependencies required.
 
-## Overview
+## Features
 
-A tiny, **fully reactive** component and state management framework built entirely with vanilla JavaScript. MicroView uses Signals for efficient, modern state management.
+-   **JSX Syntax:** Write components using familiar, declarative JSX.
+-   **Signal-Based Reactivity:** State management is powered by an efficient and granular signal system (`signal`, `effect`).
+-   **Functional Components:** Build your UI with simple, composable functions.
+-   **Zero Tooling:** Runs directly in the browser with an in-browser JSX transpiler (Babel). No build step needed for development.
 
-- No React
-- No Bundlers
-- No Dependencies
+## Core Concepts
 
-## Overview
+### 1. Signals for State Management
 
-MicroView explores what happens under the hood of modern UI frameworks. and has been fully migrated to the Signals pattern for highly efficient, granular reactivity.
+Signals are the foundation of reactivity in MicroView. They hold state and automatically track where it's used, ensuring that only the necessary parts of the DOM are updated when the state changes.
 
-- ✅ Signal-Based Global State(`signal`, `effect`)
-- ✅ Reactive Components (Auto-updates on signal changes)
-- ✅ Class-based Components & Lifecycle Hooks (`afterMount`)
-- ✅ Zero tooling. Runs right in the browser
-
-## The Core Concept: Signals
-
-Signals are the **only mechanism** for managing state in MicroView. They automatically track dependencies, eliminating the need for manual subscription management (like the old `State` class).
-
-`signal(initialValue)`
-
-Creates a reactive piece of state, returning a reader function and a writer function
+-   `signal(initialValue)`: Creates a new signal, returning a `[read, write]` tuple.
+-   `effect(callback)`: Executes a function and automatically re-runs it whenever a signal it depends on changes.
 
 ```js
 const [count, setCount] = signal(0);
 
-// Read the value (automatically registers a dependency)
-console.log(count()); //0
+// Read the value
+console.log(count()); // -> 0
 
-// Write the new value (triggers updates in all relevant effects)
-setCount(count() + 1);
-```
+// Write a new value
+setCount(1);
 
-`effect(callback)`
-
-Runs a function whenever any signal read inside of it changes. This powers the automatic re-rendering of our components.
-
-```js
+// Create a reactive effect
 effect(() => {
-  // This runs every time 'count' changes
-  console.log(`The new count is ${count}`);
+	console.log(`The count is now: ${count()}`);
 });
+// -> "The count is now: 1"
+
+setCount(2);
+// -> "The count is now: 2"
 ```
 
-## Component Example: The Reactive Counter
+### 2. JSX for Declarative UI
 
-The components extend the base component functionality using the `ReactiveComponent` class.  
-This class automatically wraps its `render()` logic in an `effect()`, ensuring the component  
-re-renders efficiently every time any signal it consumes changes.
+MicroView uses JSX to define the structure of your components. To enable JSX transpilation in the browser, you must include a `/** @jsx h */` pragma at the top of your file. This tells Babel to use our custom `h` function to convert JSX into DOM elements.
 
 ```js
-// Global State:
-const [counter, setCounter] = signal(0);
+/** @jsx h */
 
-class Counter extends ReactiveComponent {
-  render() {
-    // 1. Reading the signal here registers a dependency with the component's effect.
-    const currentCount = counter();
-
-    return `
-            <div class="counter-display">Count: ${currentCount}</div>
-            <button class="increment-btn">Increment</button>
-        `;
-  }
-
-  afterMount() {
-    // 2. We use afterMount() to attach DOM event listeners.
-    this.element
-      .querySelector('.increment-btn')
-      .addEventListener('click', () => {
-        // 3. Writing to the signal triggers a re-render of this component.
-        setCounter(counter() + 1);
-      });
-  }
+function Greeting() {
+	return <h1>Hello, World!</h1>;
 }
 ```
 
-## Why I Built This
+The `h` function handles creating elements, assigning properties (like `class` or `id`), and attaching event listeners (like `onClick`).
 
-The full transition to signals demostrates the most elegant and efficient way to handle UI updates.
+### 3. Mounting the Application
 
-Writing this framework taught me:
+The `mount` function connects your root component to a DOM element.
 
-- Granular Reactivity: How dependency tracking allows for minimal, targeted DOM updates.
-- Simplified State Flow: State is managed purely through explicit `signal` functions, eliminating the need for complex object classes.
-- Modern UI Pattern: How frameworks adopt reactivity to simplify developer workflow and enhance performance.
+`mount(selector, component)`
+
+```js
+// Renders the Greeting component inside the element with the id "app"
+mount('#app', Greeting);
+```
+
+## Example: A Reactive Counter
+
+Here’s how these concepts come together to create a simple counter component.
+
+```js
+/** @jsx h */
+
+// 1. Create a global signal for the counter's state.
+const [count, setCount] = signal(0);
+
+// 2. Create a functional component that uses the signal.
+function Counter() {
+	return (
+		<div class="container">
+			{/* Reading the signal here creates a reactive binding. */}
+			<h1>{count}</h1>
+
+			{/* Event listeners update the signal, triggering a re-render. */}
+			<button onClick={() => setCount(count() + 1)}>+</button>
+			<button onClick={() => setCount(count() - 1)}>-</button>
+		</div>
+	);
+}
+
+// 3. Mount the component to the DOM.
+mount('#root', Counter);
+```
+
+When a button is clicked, `setCount` is called. This updates the `count` signal, and because the `<h1>` element reads from `count`, MicroView automatically updates its text content.
 
 ## Try It Out
 
-Clone and open `index.html` in your browser:
-
-```bash
-git clone https://github.com/IAmWilliamHames/MicroView.git
-cd MicroView
-open app.js
-```
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/your-repo.git
+    cd your-repo
+    ```
+2.  Because the in-browser Babel transpiler needs to fetch your script, you must serve the files from a local web server to avoid CORS errors. The easiest way is with Python:
+    ```bash
+    python -m http.server
+    ```
+3.  Open your browser and navigate to `http://localhost:8000`.
