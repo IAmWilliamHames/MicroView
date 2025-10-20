@@ -7,7 +7,8 @@ function Home() {
     'div',
     null,
     h('h1', null, 'Home'),
-    h('p', null, 'Welcome to the MicroView homepage!')
+    h('p', null, 'Welcome to the MicroView homepage!'),
+    h('p', null, h(Link, { to: '/about' }, 'Check out the About page!'))
   );
 }
 
@@ -16,7 +17,8 @@ function About() {
     'div',
     null,
     h('h1', null, 'About'),
-    h('p', null, 'This is a simple routing example for MicroView.')
+    h('p', null, 'This is a simple routing example for MicroView.'),
+    h('p', null, h(Link, { to: '/' }, 'Go back Home.'))
   );
 }
 
