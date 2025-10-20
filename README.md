@@ -5,7 +5,8 @@ A tiny UI library for building reactive web applications with vanilla JavaScript
 ## Features
 
 -   **Hyperscript-style UI:** Build your UI with a declarative `h()` function, a lightweight alternative to JSX.
--   **Signal-Based Reactivity:** State management is powered by **Leom**, a complete, standalone reactive core.
+-   **Reactive Core:** State management is powered by **Leom**, a complete, standalone signal-based engine.
+-   **Built-in SPA Routing:** A simple and powerful hash-based router for building multi-page applications.
 -   **Automatic Cleanup:** Reactive effects are automatically tracked and disposed of, preventing memory leaks.
 -   **Functional Components:** Build your UI with simple, composable functions.
 -   **Zero Dependencies:** Runs directly in the browser. Pure vanilla JavaScript.
