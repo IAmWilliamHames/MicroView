@@ -128,6 +128,101 @@ mount('#root', Counter);
 
 When a button is clicked, `setCount` is called. This updates the `count` signal, and because the `<h1>` element reads from `count`, MicroView automatically updates its text content.
 
+## Routing
+
+MicroView includes a simple, powerful, hash-based router that enables you to build single-page applications. The router is fully integrated with the reactive system.
+
+### 1. `createRouter(routes)`
+
+The `createRouter` function is the core of the routing system. It takes a `routes` object (mapping URL paths to component functions) and returns an `activeComponent` signal. This signal always holds the component function corresponding to the current URL hash.
+
+```js
+import { createRouter } from './router.js';
+
+const routes = {
+  '/': HomeComponent,
+  '/about': AboutComponent,
+  '/404': NotFoundComponent, // Fallback for unmatched routes
+};
+
+const { activeComponent } = createRouter(routes);
+```
+
+### 2. `Link` Component
+
+To create navigation links, use the `Link` component. It's a simple wrapper around an `<a>` tag that automatically sets the correct hash format.
+
+`Link({ to, children })`
+
+```js
+import { Link } from './router.js';
+
+function App() {
+  return h('div', null,
+    h('nav', null,
+      h(Link, { to: '/' }, 'Home'),
+      h(Link, { to: '/about' }, 'About')
+    ),
+    // Render the active component from the router
+    activeComponent
+  );
+}
+```
+
+### Example: A Simple App with Routing
+
+Here's how to set up a complete application with two pages.
+
+**`router.js`** (This file is already provided)
+```js
+// Contains createRouter and Link...
+```
+
+**`app.js`**
+```js
+import { h, mount } from './microview.js';
+import { createRouter, Link } from './router.js';
+
+// 1. Define your page components
+function Home() {
+  return h('h1', null, 'Welcome Home!');
+}
+
+function About() {
+  return h('p', null, 'This is the about page.');
+}
+
+function NotFound() {
+  return h('h1', null, '404 - Page Not Found');
+}
+
+// 2. Define your routes
+const routes = {
+  '/': Home,
+  '/about': About,
+  '/404': NotFound
+};
+
+// 3. Create the router instance
+const { activeComponent } = createRouter(routes);
+
+// 4. Create your main App component with navigation
+function App() {
+  return h('div', null,
+    h('nav', null,
+      h(Link, { to: '/' }, 'Home'),
+      h(Link, { to: '/about' }, 'About')
+    ),
+    h('hr'),
+    // The activeComponent signal will render the correct page here
+    activeComponent
+  );
+}
+
+// 5. Mount the application
+mount('#root', App);
+```
+
 ## Try It Out
 
 1.  Clone the repository:
