@@ -18,11 +18,22 @@ export function h(tag, props, ...children) {
   children.flat().forEach((child) => {
     if (child instanceof HTMLElement) {
       el.appendChild(child);
-    } else if (typeof child === 'function') {
-      const textNode = document.createTextNode('');
-      el.appendChild(textNode);
+    } else if (typeof child === 'function') { // Handle signals/memos
+      let activeNode = document.createTextNode('');
+      el.appendChild(activeNode);
       effect(() => {
-        textNode.nodeValue = child();
+        const value = child();
+        let newNode;
+        if (value instanceof HTMLElement) {
+          newNode = value;
+        } else {
+          newNode = document.createTextNode(String(value));
+        }
+
+        if (activeNode.parentNode) {
+            activeNode.parentNode.replaceChild(newNode, activeNode);
+        }
+        activeNode = newNode;
       });
     } else if (child !== null && child !== undefined) {
       el.appendChild(document.createTextNode(String(child)));
