@@ -5,36 +5,38 @@ A tiny UI library for building reactive web applications with vanilla JavaScript
 ## Features
 
 -   **Hyperscript-style UI:** Build your UI with a declarative `h()` function, a lightweight alternative to JSX.
--   **Signal-Based Reactivity:** State management is powered by an efficient and granular signal system (`signal`, `effect`).
+-   **Signal-Based Reactivity:** State management is powered by **Leom**, a complete, standalone reactive core.
 -   **Automatic Cleanup:** Reactive effects are automatically tracked and disposed of, preventing memory leaks.
 -   **Functional Components:** Build your UI with simple, composable functions.
 -   **Zero Dependencies:** Runs directly in the browser. Pure vanilla JavaScript.
 
 ## Core Concepts
 
-### 1. Signals for State Management
+### 1. Leom Signals for State Management
 
-Signals are the foundation of reactivity in MicroView. They hold state and automatically track where it's used, ensuring that only the necessary parts of the DOM are updated when the state changes.
+Reactivity in MicroView is powered by **Leom**. Signals are the foundation of this system. They hold state and automatically track where it's used, ensuring that only the necessary parts of the DOM are updated when the state changes.
 
--   `signal(initialValue)`: Creates a new signal, returning a `[read, write]` tuple.
--   `effect(callback)`: Executes a function and automatically re-runs it whenever a signal it depends on changes.
+-   `createSignal(initialValue)`: Creates a new signal. It returns a single function that acts as both a **getter** (when called with no arguments) and a **setter** (when called with an argument).
+-   `createEffect(callback)`: Executes a function and automatically re-runs it whenever a signal it depends on changes.
 
 ```js
-const [count, setCount] = signal(0);
+import { createSignal, createEffect } from './leom.js';
+
+const count = createSignal(0);
 
 // Read the value
 console.log(count()); // -> 0
 
 // Write a new value
-setCount(1);
+count(1);
 
 // Create a reactive effect
-effect(() => {
+createEffect(() => {
 	console.log(`The count is now: ${count()}`);
 });
 // -> "The count is now: 1"
 
-setCount(2);
+count(2);
 // -> "The count is now: 2"
 ```
 
@@ -74,7 +76,7 @@ dispose(); // The app is now cleaned up.
 
 ### 4. Lifecycle and Cleanup
 
-MicroView provides an automatic cleanup mechanism to prevent memory leaks. Every reactive `effect` is tracked within a scope. When a component is unmounted (e.g., by calling the `dispose` function returned by `mount`), all of its child effects are automatically cleaned up.
+MicroView, powered by Leom, provides an automatic cleanup mechanism to prevent memory leaks. Every reactive effect is tracked within a scope. When a component is unmounted (e.g., by calling the `dispose` function returned by `mount`), all of its child effects are automatically cleaned up.
 
 You can also hook into this process with the `onCleanup` function.
 
@@ -101,19 +103,22 @@ function MyComponent() {
 Here’s how these concepts come together to create a simple counter component.
 
 ```js
+import { createSignal } from './leom.js';
+import { h, mount } from './microview.js';
+
 // 1. Create a global signal for the counter's state.
-const [count, setCount] = signal(0);
+const count = createSignal(0);
 
 // 2. Create a functional component that uses the signal and h().
 function Counter() {
   return h(
     'div',
     { class: 'container' },
-    // Reading the signal here creates a reactive binding.
+    // Passing the signal directly to h() creates a reactive binding.
     h('h1', null, count),
     // Event listeners update the signal, triggering a re-render.
-    h('button', { onClick: () => setCount(count() + 1) }, '+'),
-    h('button', { onClick: () => setCount(count() - 1) }, '-')
+    h('button', { onClick: () => count(count() + 1) }, '+'),
+    h('button', { onClick: () => count(count() - 1) }, '-')
   );
 }
 
