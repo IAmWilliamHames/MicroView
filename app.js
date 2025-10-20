@@ -1,36 +1,59 @@
-import { createSignal } from './leom.js';
 import { h, mount } from './microview.js';
+import { createRouter, Link } from './router.js';
 
-// --- Global reactive signal ---
-const count = createSignal(0);
-
-// Counter Component
-function Counter() {
+// --- Page Components ---
+function Home() {
   return h(
     'div',
-    { class: 'container' },
-    h('h1', null, count), // Pass the signal directly
-    h('button', { onClick: () => count(count() + 1) }, '+'),
-    h('button', { onClick: () => count(count() - 1) }, '-')
+    null,
+    h('h1', null, 'Home'),
+    h('p', null, 'Welcome to the MicroView homepage!')
   );
 }
 
-// Hero Component
-function Hero(props) {
+function About() {
   return h(
-    'section',
-    { class: 'hero' },
-    h('h2', null, props.header),
-    h('p', null, props.description),
-    h(Counter)
+    'div',
+    null,
+    h('h1', null, 'About'),
+    h('p', null, 'This is a simple routing example for MicroView.')
   );
 }
 
-// --- Setup ---
-mount(
-  '#root',
-  () => h(Hero, {
-    header: "MicroView: Build Views With JavaScript",
-    description: "A tiny component and state management framework built entirely with vanilla JavaScript — now reactive with signals."
-  })
-);
+function NotFound() {
+    return h(
+      'div',
+      null,
+      h('h1', null, '404 - Not Found'),
+      h('p', null, 'The page you are looking for does not exist.')
+    );
+  }
+
+// --- Router Setup ---
+const routes = {
+  '/': Home,
+  '/about': About,
+  '/404': NotFound
+};
+
+const { activeComponent } = createRouter(routes);
+
+// --- Main App Component ---
+function App() {
+  return h(
+    'div',
+    null,
+    h(
+      'nav',
+      null,
+      h(Link, { to: '/' }, 'Home'),
+      ' | ',
+      h(Link, { to: '/about' }, 'About')
+    ),
+    h('hr'),
+    activeComponent // Render the active component signal
+  );
+}
+
+// --- Mount Application ---
+mount('#root', App);
