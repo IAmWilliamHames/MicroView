@@ -22,8 +22,14 @@ export function h(tag, props, ...children) {
       let activeNode = document.createTextNode('');
       el.appendChild(activeNode);
       effect(() => {
-        const value = child();
+        let value = child();
         let newNode;
+
+        // If a signal returns a function, it's a component function; execute it.
+        if (typeof value === 'function') {
+            value = value();
+        }
+
         if (value instanceof HTMLElement) {
           newNode = value;
         } else {

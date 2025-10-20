@@ -18,8 +18,7 @@ export function createRouter(routes) {
   // 4. Memoized Active Component
   const activeComponent = createMemo(() => {
     const path = currentRoute().slice(1) || '/';
-    const component = routes[path] || routes['/404'] || (() => h('h1', null, '404 Not Found'));
-    return component();
+    return routes[path] || routes['/404'] || (() => h('h1', null, '404 Not Found'));
   });
 
   return { activeComponent, navigate };
