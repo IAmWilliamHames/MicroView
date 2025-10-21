@@ -1,61 +1,26 @@
-import { h, mount } from '../src/microview.js';
-import { createRouter, Link } from '../src/router.js';
+import { mount } from '../src/microview.js';
+import { createRouter } from '../src/router.js';
 
-// --- Page Components ---
-function Home() {
-  return h(
-    'div',
-    null,
-    h('h1', null, 'Home'),
-    h('p', null, 'Welcome to the MicroView homepage!'),
-    h('p', null, h(Link, { to: '/about' }, 'Check out the About page!'))
-  );
-}
+// Import Pages (The views tied to routes)
+import { Home } from './pages/Home.js';
+import { About } from './pages/About.js';
+import { Todo } from './pages/Todo.js';
+import { NotFound } from './pages/NotFound.js';
 
-function About() {
-  return h(
-    'div',
-    null,
-    h('h1', null, 'About'),
-    h('p', null, 'This is a simple routing example for MicroView.'),
-    h('p', null, h(Link, { to: '/' }, 'Go back Home.'))
-  );
-}
-
-function NotFound() {
-  return h(
-    'div',
-    null,
-    h('h1', null, '404 - Not Found'),
-    h('p', null, 'The page you are looking for does not exist.')
-  );
-}
+// Import Components (The main layout wrapper)
+import { App } from './components/App.js';
 
 // --- Router Setup ---
 const routes = {
   '/': Home,
   '/about': About,
+  '/todos': Todo,
   '/404': NotFound,
 };
 
 const { activeComponent } = createRouter(routes);
 
-// --- Main App Component ---
-function App() {
-  return h(
-    'div',
-    null,
-    h(
-      'nav',
-      null,
-      h(Link, { to: '/' }, 'Home'),
-      ' | ',
-      h(Link, { to: '/about' }, 'About')
-    ),
-    h('hr'),
-    activeComponent // Render the active component signal
-  );
-}
-
 // --- Mount Application ---
-mount('#root', App);
+// The App component takes the activeComponent signal and renders it within the layout.
+// Note: We wrap App in a function for mount, as mount expects a component function.
+mount('#root', () => App({ activeComponent }));
