@@ -2,17 +2,17 @@ import { createSignal, createMemo } from '../../src/leom.js';
 import { h } from '../../src/microview.js';
 import { TodoItem } from '../components/TodoItem.js';
 
+const todoList = createSignal([
+  { id: 1, text: 'Build reactive component', completed: createSignal(false) },
+  { id: 2, text: 'Add routing', completed: createSignal(true) },
+]);
+const newTodoText = createSignal('');
+
 /**
  * Main To-Do Application Page Component.
  * Demonstrates complex state management and reactive list rendering.
  */
 export function Todo() {
-  const todoList = createSignal([
-    { id: 1, text: 'Build reactive component', completed: createSignal(false) },
-    { id: 2, text: 'Add routing', completed: createSignal(true) },
-  ]);
-  const newTodoText = createSignal('');
-
   const addTodo = () => {
     const text = newTodoText().trim();
     if (text) {
