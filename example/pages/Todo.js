@@ -67,7 +67,7 @@ export function Todo() {
       h('input', {
         type: 'text',
         placeholder: 'New task...',
-        value: newTodoText(),
+        value: newTodoText,
         onInput: (e) => newTodoText(e.target.value),
         onKeydown: (e) => {
           if (e.key === 'Enter') addTodo();

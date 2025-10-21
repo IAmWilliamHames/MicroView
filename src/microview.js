@@ -8,13 +8,28 @@ export function h(tag, props, ...children) {
   const el = document.createElement(tag);
 
   for (const key in props) {
+    const value = props[key]; // Get the prop value
+
     if (key.startsWith('on')) {
-      el.addEventListener(key.slice(2).toLowerCase(), props[key]);
+      el.addEventListener(key.slice(2).toLowerCase(), value);
+    } else if (typeof value === 'function') {
+      // FIX 1: Handle reactive attributes/properties by wrapping assignment in an effect.
+      effect(() => {
+        const reactiveValue = value(); // Execute the signal/memo
+        if (key === 'value' || key === 'checked') {
+          // Use DOM property assignment for interactive elements
+          el[key] = reactiveValue;
+        } else {
+          // Use setAttribute for all other reactive attributes
+          el.setAttribute(key, reactiveValue);
+        }
+      });
     } else if (key === 'value' || key === 'checked') {
-      // Use DOM property assignment for 'value' and 'checked'
-      el[key] = props[key];
+      // Handle static 'value'/'checked' properties
+      el[key] = value;
     } else {
-      el.setAttribute(key, props[key]);
+      // Handle static attributes
+      el.setAttribute(key, value);
     }
   }
 
