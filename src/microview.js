@@ -13,7 +13,7 @@ export function h(tag, props, ...children) {
     if (key.startsWith('on')) {
       el.addEventListener(key.slice(2).toLowerCase(), value);
     } else if (typeof value === 'function') {
-      // FIX 1: Handle reactive attributes/properties by wrapping assignment in an effect.
+      // Handle reactive attributes/properties by wrapping assignment in an effect.
       effect(() => {
         const reactiveValue = value(); // Execute the signal/memo
         if (key === 'value' || key === 'checked') {
