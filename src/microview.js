@@ -10,6 +10,9 @@ export function h(tag, props, ...children) {
   for (const key in props) {
     if (key.startsWith('on')) {
       el.addEventListener(key.slice(2).toLowerCase(), props[key]);
+    } else if (key === 'value' || key === 'checked') {
+      // Use DOM property assignment for 'value' and 'checked'
+      el[key] = props[key];
     } else {
       el.setAttribute(key, props[key]);
     }
