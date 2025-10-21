@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>MicroView - A Signal-Based UI Library</h1>
+<p>A tiny UI library for building reactive web applications with vanilla JavaScript. <strong>No dependencies</strong>, <strong>no bundlers</strong>, <strong>no magic</strong>.</p>
+<h2>Project Origin &amp; Philosophy</h2>
+<p>MicroView is a lightweight, zero-dependency <strong>JavaScript library</strong> built primarily as a practical exercise in modern front-end engineering. Its development was a focused journey to understand and implement the core concepts of high-performance UI rendering:</p>
+<ol>
+<li><strong>Component Foundations</strong>: The project began as an experiment to grasp how <strong>functional components</strong> and state encapsulation work.</li>
+<li><strong>Reactive Core (Leom)</strong>: This evolved into a deep dive into state management patterns. After exploring common approaches, the decision was made to commit to <strong>Signal-based reactivity</strong>. This choice was driven by understanding that signals offer high performance and enable highly granular DOM updates, eliminating the need for a Virtual DOM. The result is Leom, a minimal, separate project that acts as the core reactive engine.</li>
+<li><strong>Hyperscript UI</strong>: The declarative UI layer was established by implementing the <strong><code>h()</code> function</strong>, the pure JavaScript equivalent of JSX, to create a concise and readable view layer.</li>
+<li><strong>Community-Driven API</strong>: The current API was significantly refined based on valuable feedback and shared experiences received from the community following a series of posts about the project on LinkedIn.</li>
+<li><strong>Application Readiness</strong>: Routing was added to prepare the library for a real-world test: building a complete Single-Page Application (SPA) using MicroView.</li>
+</ol>
+<p>This project demonstrates a thorough, hands-on understanding of reactivity principles, DOM manipulation efficiency, and modern component architecture.</p>
+<hr>
+<h2>Features</h2>
+<ul>
+<li><strong>HyperScript-Style UI</strong>: Build your UI with a declarative <code>h()</code> function, a lightweight alternative to JSX.</li>
+<li><strong>Reactive Core</strong>: State management is powered by <strong>Leom</strong>, a complete, standalone signal-based engine.</li>
+<li><strong>Built-In SPA Routing</strong>: A simple and powerful hash-based router for building multi-page applications.</li>
+<li><strong>Automatic Cleanup</strong>: Reactive effects are automatically tracked and disposed of, preventing memory leaks.</li>
+<li><strong>Functional Components</strong>: Build your UI with simple, composable functions.</li>
+<li><strong>Zero Dependencies</strong>: Runs directly in the browser. Pure vanilla JavaScript.</li>
+</ul>
+<hr>
+<h2>Core Concepts</h2>
+<ol>
+<li><strong>Leom Signals For State Management</strong></li>
+</ol>
+<p>Reactivity in MicroView is powered by <strong>Leom</strong>. Signals are the foundation of this system, holding state and automatically tracking where it's used to ensure only necessary parts of the DOM are updated when the state changes.</p>
+<ul>
+<li><code>createSignal(initialValue)</code>: Creates a new signal that returns a single function acting as both a <strong>getter</strong> (no arguments) and a <strong>setter</strong> (with an argument).</li>
+<li><code>createEffect(callback)</code>: Executes a function and automatically re-runs it whenever a signal it depends on changes.</li>
+</ul>
+<pre class="prettyprint source lang-js"><code>import { createSignal, createEffect } from './leom.js';
+
+const count = createSignal(0);
+
+// Create a reactive effect
+createEffect(() => {
+  console.log(`The count is now: ${count()}`); // -> &quot;The count is now: 0&quot;
+});
+
+count(1); // -> &quot;The count is now: 1&quot;
+</code></pre>
+<ol start="2">
+<li><strong>The <code>h()</code> Function For Building UIs</strong></li>
+</ol>
+<p>MicroView uses a <strong>hyperScript</strong> function, <code>h()</code>, to create DOM elements declaratively. It takes a tag, and object of properties, and an array of children: <code>h(tag, props, ...children)</code>.</p>
+<pre class="prettyprint source lang-js"><code>function Greeting()
+  return h('h1', { class: 'title' }, 'Hello World')
+</code></pre>
+<ol start="3">
+<li><strong>Mounting And Cleanup</strong></li>
+</ol>
+<p>The <code>mount(selector, component)</code> function connects your root component to a DOM element (e.g., <code>#root</code>). It returns a <code>dispose</code> function to completely unmount the component and clean up all associated reactive effects, ensuring no memory leaks.</p>
+<p>You can also use <code>onCleanup(fn)</code> to register a function to be called when the current reactive scope (component of effect) is disposed.</p>
+<pre class="prettyprint source lang-js"><code>import { onCleanup } from './leom.js';
+
+function MyComponent() {
+  const timer = setInterval(() => console.log('tick'), 1000);
+
+  // Register the cleanup logic for this component
+  onCleanup(() => {
+    clearInterval(timer);
+    console.log('Timer cleaned up!');
+  });
+  // ...
+}
+</code></pre>
+<h2>Example: A Reactive Counter</h2>
+<p>This shows how signals are used directly as reactive bindings in the UI.</p>
+<pre class="prettyprint source lang-js"><code>import { createSignal } from './leom.js';
+import { h, mount } from './microview.js';
+
+const count = createSignal(0);
+
+function Counter() {
+  return h(
+    'div',
+    { class: 'container' },
+    // Passing the signal directly to h() creates a reactive binding.
+    h('h1', null, count),
+    // Event listeners update the signal, triggering a re-render.
+    h('button', { onClick: () => count(count() + 1) }, '+'),
+    h('button', { onClick: () => count(count() - 1) }, '-')
+  );
+}
+
+mount('#root', Counter);
+</code></pre>
+<h2>Routing</h2>
+<p>MicroView includes a hash-based router for building Single-Page Applications (SPAs), integrating fully with the reactive system.</p>
+<p><code>createRouter(routes)</code></p>
+<p>It takes a routes object (path-to-component mapping) and returns an <code>activeComponent</code> signal, which holds the component corresponding to the current URL hash.</p>
+<h3><code>Link</code> Component</h3>
+<p>Use the <code>Link</code> component to create navigation elements.</p>
+<pre class="prettyprint source lang-js"><code>import { Link } from './router.js';
+
+function App({ activeComponent }) {
+  return h(
+    'div',
+    null,
+    h(
+      'nav',
+      null,
+      h(Link, { to: '/' }, 'Home'),
+      h(Link, { to: '/about' }, 'About')
+    ),
+    h('hr'),
+    // The activeComponent signal will render the correct page here
+    activeComponent
+  );
+}
+</code></pre>
+<h2>Project Status &amp; Next Steps</h2>
+<p>MicroView is currently a <strong>Proof-of-Concept</strong> and a comprehensive educational project demonstrating component architecture and high-performance, signal-based reactivity.</p>
+<p>The next steps of for this project include:</p>
+<ol>
+<li>Building a complete, non-trivial application (e.g. complex dashboard) using MicroView to validate its API and performance under load.</li>
+<li>Explore optimization opportunities within the Leom core.</li>
+</ol>
+<h2>Try It Out</h2>
+<ol>
+<li>Clone the repository:</li>
+</ol>
+<pre class="prettyprint source lang-bash"><code>git clone https://github.com/IAmWilliamHames/MicroView.git
+cd MicroView
+</code></pre>
+<ol start="2">
+<li>Open <code>index.html</code> directly in your browser. Since there are no dependencies or build tools, it just works.</li>
+</ol></article>
+    </section>
+
+
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>leom.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Leom - A minimal reactive core engine for building user interfaces.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+    <dt class="tag-version">Version:</dt>
+    <dd class="tag-version"><ul class="dummy"><li>1.0.0</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>William Hames</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="leom.js.html">leom.js</a>, <a href="leom.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>microview.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Microview - A lightweight library for creating reactive user interfaces.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="microview.js.html">microview.js</a>, <a href="microview.js.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>router.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">A simple hash-based router for client-side navigation.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="router.js.html">router.js</a>, <a href="router.js.html#line4">line 4</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Link">Link</a></li><li><a href="global.html#createEffect">createEffect</a></li><li><a href="global.html#createMemo">createMemo</a></li><li><a href="global.html#createRoot">createRoot</a></li><li><a href="global.html#createRouter">createRouter</a></li><li><a href="global.html#createSignal">createSignal</a></li><li><a href="global.html#h">h</a></li><li><a href="global.html#mount">mount</a></li><li><a href="global.html#onCleanup">onCleanup</a></li><li><a href="global.html#scheduleUpdate">scheduleUpdate</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Oct 21 2025 01:42:34 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
