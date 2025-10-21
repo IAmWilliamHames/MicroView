@@ -1,6 +1,6 @@
 /**
  * @file Leom - A minimal reactive core engine for building user interfaces.
- * @author Your Name
+ * @author William Hames
  * @version 1.0.0
  */
 
