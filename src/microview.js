@@ -18,7 +18,8 @@ export function h(tag, props, ...children) {
   children.flat().forEach((child) => {
     if (child instanceof HTMLElement) {
       el.appendChild(child);
-    } else if (typeof child === 'function') { // Handle signals/memos
+    } else if (typeof child === 'function') {
+      // Handle signals/memos
       let activeNode = document.createTextNode('');
       el.appendChild(activeNode);
       effect(() => {
@@ -27,7 +28,7 @@ export function h(tag, props, ...children) {
 
         // If a signal returns a function, it's a component function; execute it.
         if (typeof value === 'function') {
-            value = value();
+          value = value();
         }
 
         if (value instanceof HTMLElement) {
@@ -37,7 +38,7 @@ export function h(tag, props, ...children) {
         }
 
         if (activeNode.parentNode) {
-            activeNode.parentNode.replaceChild(newNode, activeNode);
+          activeNode.parentNode.replaceChild(newNode, activeNode);
         }
         activeNode = newNode;
       });
@@ -50,16 +51,16 @@ export function h(tag, props, ...children) {
 }
 
 export function mount(selector, component) {
-    const target = document.querySelector(selector);
-    if (!target) {
-        throw new Error(`[mount] No element found for selector: ${selector}`);
-    }
+  const target = document.querySelector(selector);
+  if (!target) {
+    throw new Error(`[mount] No element found for selector: ${selector}`);
+  }
 
-    let dispose;
-    createRoot((disposer) => {
-        dispose = disposer;
-        target.appendChild(component());
-    });
+  let dispose;
+  createRoot((disposer) => {
+    dispose = disposer;
+    target.appendChild(component());
+  });
 
-    return dispose;
+  return dispose;
 }

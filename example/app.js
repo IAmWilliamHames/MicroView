@@ -1,5 +1,5 @@
-import { h, mount } from './microview.js';
-import { createRouter, Link } from './router.js';
+import { h, mount } from '../src/microview.js';
+import { createRouter, Link } from '../src/router.js';
 
 // --- Page Components ---
 function Home() {
@@ -23,19 +23,19 @@ function About() {
 }
 
 function NotFound() {
-    return h(
-      'div',
-      null,
-      h('h1', null, '404 - Not Found'),
-      h('p', null, 'The page you are looking for does not exist.')
-    );
-  }
+  return h(
+    'div',
+    null,
+    h('h1', null, '404 - Not Found'),
+    h('p', null, 'The page you are looking for does not exist.')
+  );
+}
 
 // --- Router Setup ---
 const routes = {
   '/': Home,
   '/about': About,
-  '/404': NotFound
+  '/404': NotFound,
 };
 
 const { activeComponent } = createRouter(routes);
